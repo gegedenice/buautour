@@ -1,0 +1,30 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "com.phonegap.plugins.barcodescanner": {
+      "PACKAGE_NAME": "com.gege.dev"
+    },
+    "cordova-plugin-ezar-videooverlay": {
+      "PACKAGE_NAME": "com.gege.dev"
+    },
+    "cordova-plugin-geolocation": {
+      "PACKAGE_NAME": "com.gege.dev"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.gege.dev"
+    },
+    "cordova-plugin-device-orientation": {
+      "PACKAGE_NAME": "com.gege.dev"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.gege.dev"
+    }
+  },
+  "dependent_plugins": {}
+}

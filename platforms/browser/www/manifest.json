@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "Bu Autour",
+  "short_name": "Bu Autour",
+  "version": "com.gege.buautour",
+  "description": "Une application de visualisation des bibliothèques du réseau Sudoc et de géolocalisation de documents en réalité augmentée",
+  "author": "Géraldine Geoffroy",
+  "icons": [],
+  "start_url": "index.html"
+}

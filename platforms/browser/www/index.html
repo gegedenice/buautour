@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
+  <title>BU autour</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+<nav class="blue">
+    <div class="nav-wrapper">
+	 <img src="img/ar-icon-bu.png" height="50" width="50">
+      <a href="#" class="brand-logo">BU Autour</a>
+    </div>
+  </nav>
+
+   <div class="row">
+        <div class="col s12 m4">
+        </div>
+        <div class="col s12 m4">
+        </div>
+      </div>
+  
+  <div class="parallax-container valign-wrapper">
+    <div class="section no-pad-bot">
+      <div class="container">
+        
+        <h5 class="header center teal-text text-lighten-2">Les bibliothèques du réseau Sudoc en réalité augmentée</h5>
+        <div class="row center">
+          <a href="main.html#bu_ar" id="download-button" class="btn-large waves-effect waves-light blue lighten-1">Go !</a>
+        </div>
+      </div>
+    </div>
+    <div class="parallax white"></div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+        </div>
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">flash_on</i></h2>
+            <h5 class="center blue-text">Les données</h5>
+            <p class="light blue-text center">L'application s'appuie sur les données des notices rcr des établissements du réseau Sudoc qui sont exposées et accessibles via les web services développés par l'Abes, notamment <a href="http://documentation.abes.fr/aideidrefdeveloppeur/index.html?p=co/MicroWebIln2rcr.html"><span class="flow-text">iln2rcr</span></a> et <a href="http://documentation.abes.fr/sudoc/manuels/administration/aidewebservices/index.html#multiwhere"><span class="flow-text">multiwhere</span></a>.</p>
+          </div>
+        </div>
+        <div class="col s12 m4">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="parallax-container valign-wrapper">
+     <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h5 class="header center teal-text text-lighten-2">Géolocaliser un document avec son ISBN</h5>
+        <div class="row center">
+          <!--<a href="main.html#scan" id="download-button" class="btn-large waves-effect waves-light blue lighten-1" onClick="stop();">Go !</a>-->
+		  <a href="main.html#scan" id="download-button" class="btn-large waves-effect waves-light blue lighten-1" onClick="stop();">Go !</a>
+        </div>
+      </div>
+    </div>
+    <div class="parallax white"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="row">
+        <div class="col s12 m4">
+        </div>
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">contact_mail</i></h2>
+          <h6 class="center">Contact</h6>
+          <p class="center-align light"><a href="mailto:geoffroy@unice.fr">geoffroy@unice.fr</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+ </div> 
+
+  <footer class="page-footer teal">
+   <div class="footer-copyright">
+      <div class="row">
+	  <div class="col s12 m4">
+	  <div class="col s4">
+      <img src="img/ar-icon-bu.png" height="30" width="30">
+     </div>	  
+	  <div class="col s8">
+	 <a class="brown-text text-lighten-3" href="https://notrestartup.com/app-privacy-policy/BuAutour.html">Règles de confidentialité</a>
+	    </div>
+		</div>
+      </div>
+    </div>
+</footer>
+
+
+  <!--  Scripts-->
+  <script src="js/jquery-2.1.4.min.js"></script>
+  <script src="js/materialize.min.js"></script>
+  <script src="js/materialize-custom.js"></script>
+  <script type="text/javascript" src="cordova.js"></script>
+ 		<script>
+document.addEventListener('deviceready', function onDeviceReady() {			
+if (window.ezar) {
+            ezar.initializeVideoOverlay(
+                function() {
+                ezar.getBackCamera().start();
+                },
+                function(err) {
+                alert('unable to init ezar: ' + err);
+            });
+        } else {
+            alert('Unable to detect the ezAR plugin');
+        }		
+        }, false); 
+  </script>
+  </body>
+</html>
+

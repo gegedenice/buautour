@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, height=device-height">
+        <title>Blank App</title>
+		<!-- CSS  -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+		<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+		<!-- google map -->
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMZfjPj0DpsRb2c_3SspVkR9T8BxmKDBM"></script>
+    </head>
+    <body ng-controller="myCtrl">
+	<nav class="blue">
+    <div class="nav-wrapper">
+	  <a href="index.html" ><img src="img/ar-icon-bu.png" height="50" width="50"></a>
+      <a href="#" class="brand-logo">BU Autour</a>
+	 <a class="right btn-floating btn-large waves-effect waves-light purple modal-trigger" href="#modalFiltreDept">
+      <i class="material-icons">add_location</i>
+								</a>
+    </div>
+  </nav>
+	 <div class="container">
+						<div class="row">
+							<div class="col col s12 m4">
+								<ul class="tabs">
+									<li class="tab col s6"><a href="#bu_ar" class="active" ng-click="restart()">Voir les BU</a></li>
+									<li class="tab col s6"><a href="#scan">Scanner un ISBN</a></li>
+								</ul>
+							</div>
+						</div>
+						
+						<!--onglet BU en AR-->
+						<div id="bu_ar" class="col col s12 m4">						
+    <div class="row center">
+	<div class="chip directionInsert">
+    Vous devez d'abord appliquer un filtre sur un département
+    <i class="close material-icons">close</i>
+  </div>  
+  </div>
+							<div class="row center">
+									<div class="directionInsert chip pink darken-4">
+										<i class="material-icons left">arrow_back</i><span class="white-text">{{direction}}</span><i class="material-icons right">arrow_forward</i>
+										<p class="white-text">Filtre actif sur le département : {{deptRadio}}</p> 
+									</div>
+							</div>
+							<div class="chip purple darken-1" ng-repeat="hit in orderedItems | filter: customfilter | filter:search | filter:formModel.typeRadio as totalFilteredResults" ng-style="myObj(hit)">
+    {{hit.shortname}} ({{hit.distance}} kms)
+							</br>
+							<a class="waves-effect waves-light modal-trigger" href="#modalMap" ng-click="initializeMap(hit)"><i class="material-icons left">location_on</i>Trajet</a>
+							<a class="waves-effect waves-light" href="#" ng-click="openWeb(hit)"><i class="material-icons left">link</i>Site web</a>
+							<a class="waves-effect waves-light modal-trigger" href="#modalInfos" ng-click="initializeInfos(hit)"><i class="material-icons left">info</i>Infos</a>			  
+						</div>
+						<div class="fixed-action-btn">
+							<!--<a class="btn-floating btn-large red modal-trigger" href="#modalFiltre">-->
+							<a href="#modalFiltre" class="waves-effect waves-circle waves-light btn-floating secondary-content modal-trigger">
+								<i class="large material-icons">filter_list</i>
+							</a>
+						</div>
+					</div>
+					<!--Fin onglet BU en AR -->
+
+					<!--onglet Scanner-->
+					<div id="scan" class="col col s12 m4">
+					<div class="row center">
+	                 <div class="chip directionInsert">
+                       Vous devez d'abord désactiver la caméra pour utiliser le scanner
+                       <i class="close material-icons">close</i>
+                     </div>  
+                    </div>
+					    <div class="row center">
+						<a href="#" class="waves-effect waves-light btn" ng-click="stop()">Désactiver la caméra</a>
+						</div>
+						<div class="row" class="block">
+							<div class="col col s12 m4 m6">
+								<div class="card blue">
+									<div class="card-content white-text">
+									    <p><input name="scanChoice" type="radio" class="with-gap" id="isbn" value="isbn" ng-model="scanRadio" ng-click="scan(scanRadio);" /> <label for="isbn">Scanner un ISBN</label></p>
+								        <p><input name="scanChoice" type="radio" class="with-gap" id="ean" value="ean" ng-model="scanRadio" ng-click="scan(scanRadio);"/> <label for="ean">Scanner un EAN</label></p>
+										<span class="card-title">Titre : {{title}}</span>
+										<p>Code-barre scanné : {{value}}</p>
+										<p>Nombre de bibliothèques possédant ce document : {{count}}</p>
+									</div>
+									<div class="card-action">
+										<a href="#modalMapBibs" class="modal-trigger">Les bibliothèques sur la carte</a>
+									</div>
+									<div class="card-action">
+										<a href="#" ng-click="VarToSeeAr=true;restart()">Les bibliothèques en réalité augmentée</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div ng-if="VarToSeeAr" class="block">
+							<div class="row center">
+									<div class="directionInsert chip pink darken-4">
+										<i class="material-icons left">arrow_back</i><span class="white-text">{{direction}}</span><i class="material-icons right">arrow_forward</i>
+										<p class="white-text">Filtre actif : département {{deptRadio}}</p> 
+									</div>
+							</div>
+							<div class="row">
+								<div class="col col s12 m4">
+									<div id="spot">
+										<div class="chip purple darken-1" ng-repeat="spot in orderedLibraries | filter: customfilterSpot" ng-style="myObj(spot)">
+    {{spot.shortname}} ({{spot.distance}} kms)
+										</br>
+										<a class="waves-effect waves-light modal-trigger" href="#modalMap" ng-click="initializeMap(spot)"><i class="material-icons left">location_on</i>Trajet</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--Fin onglet Scanner-->
+
+				<!-- ModalFiltreDept Structure-->
+				<div id="modalFiltreDept" class="modal">
+					<div class="modal-content">
+						<div class="row">
+							<h6>Choisir votre région puis votre département</h6>
+							<ul class="collapsible">
+								<li>
+									<div class="collapsible-header">Alsace-Champagne-Ardenne-Lorraine</div>
+									<div class="collapsible-body">	  
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="08" value="08" ng-click="getVal();getValScan()"/><label for="08">Ardennes</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="10" value="10" ng-click="getVal();getValScan()"/><label for="10">Aube</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="51" value="51" ng-click="getVal();getValScan()"/><label for="51">Marne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="52" value="52" ng-click="getVal();getValScan()"/><label for="52">Haute-Marne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="54" value="54" ng-click="getVal();getValScan()"/><label for="54">Meurthe-et-Moselle</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="55" value="55" ng-click="getVal();getValScan()"/><label for="55">Meuse</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="57" value="57" ng-click="getVal();getValScan()"/><label for="57">Moselle</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="67" value="67" ng-click="getVal();getValScan()"/><label for="67">Bas-Rhin</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="68" value="68" ng-click="getVal();getValScan()"/><label for="68">Haut-Rhin</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="88" value="88" ng-click="getVal();getValScan()"/><label for="88">Vosges</label></p>
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Aquitaine-Limousin-Poitou-Charentes</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="16" value="16" ng-click="getVal();getValScan()"/><label for="16">Charente</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="17" value="17" ng-click="getVal();getValScan()"/><label for="17">Charente-Maritime</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="19" value="19" ng-click="getVal();getValScan()"/><label for="19">Corrèze</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="23" value="23" ng-click="getVal();getValScan()"/><label for="23">Creuse</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="24" value="24" ng-click="getVal();getValScan()"/><label for="24">Dordogne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="33" value="33" ng-click="getVal();getValScan()"/><label for="33">Gironde</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="40" value="40" ng-click="getVal();getValScan()"/><label for="40">Landes</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="47" value="47" ng-click="getVal();getValScan()"/><label for="47">Lot-et-Garonne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="64" value="64" ng-click="getVal();getValScan()"/><label for="64">Pyrénées-Atlantiques</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="79" value="79" ng-click="getVal();getValScan()"/><label for="79">Deux-Sèvres</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="86" value="86" ng-click="getVal();getValScan()"/><label for="86">Vienne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="87" value="87" ng-click="getVal();getValScan()"/><label for="87">Haute-Vienne</label></p>	  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Auvergne-Rhône-Alpes</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="01" value="01" ng-click="getVal();getValScan()"/><label for="01">Ain</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="03" value="03" ng-click="getVal();getValScan()"/><label for="03">Allier</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="07" value="07" ng-click="getVal();getValScan()"/><label for="07">Ardèche</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="15" value="15" ng-click="getVal();getValScan()"/><label for="15">Cantal</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="26" value="26" ng-click="getVal();getValScan()"/><label for="26">Drôme</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="38" value="38" ng-click="getVal();getValScan()"/><label for="38">Isère</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="42" value="42" ng-click="getVal();getValScan()"/><label for="42">Loire</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="43" value="43" ng-click="getVal();getValScan()"/><label for="43">Haute-Loire</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="63" value="63" ng-click="getVal();getValScan()"/><label for="63">Puy-de-Dôme</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="69" value="69" ng-click="getVal();getValScan()"/><label for="69">Rhône</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="73" value="73" ng-click="getVal();getValScan()"/><label for="73">Savoie</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="74" value="74" ng-click="getVal();getValScan()"/><label for="74">Haute-Savoie</label></p>	  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Bourgogne-Framche-Comté</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="21" value="21" ng-click="getVal();getValScan()"/><label for="21">Côte-d'or</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="25" value="25" ng-click="getVal();getValScan()"/><label for="25">Doubs</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="39" value="39" ng-click="getVal();getValScan()"/><label for="39">Jura</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="58" value="58" ng-click="getVal();getValScan()"/><label for="58">Nièvre</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="70" value="70" ng-click="getVal();getValScan()"/><label for="70">Haute-Saône</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="71" value="71" ng-click="getVal();getValScan()"/><label for="71">Saône-et-Loire</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="89" value="89" ng-click="getVal();getValScan()"/><label for="89">Yonne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="90" value="90" ng-click="getVal();getValScan()"/><label for="90">Territoire de Belfort</label></p>	  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Bretagne</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="22" value="22" ng-click="getVal();getValScan()"/><label for="22">Côtes-d'armor</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="29" value="29" ng-click="getVal();getValScan()"/><label for="29">Finistère</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="35" value="35" ng-click="getVal();getValScan()"/><label for="35">Ille-et-Vilaine</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="56" value="56" ng-click="getVal();getValScan()"/><label for="56">Morbihan</label></p>	  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Centre-Val de Loire</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="18" value="18" ng-click="getVal();getValScan()"/><label for="18">Cher</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="28" value="28" ng-click="getVal();getValScan()"/><label for="28">Eure-et-Loir</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="36" value="36" ng-click="getVal();getValScan()"/><label for="36">Indre</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="37" value="37" ng-click="getVal();getValScan()"/><label for="37">Indre-et-Loire</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="41" value="41" ng-click="getVal();getValScan()"/><label for="41">Loir-et-Cher</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="45" value="45" ng-click="getVal();getValScan()"/><label for="45">Loiret</label></p>	  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="20" value="20" ng-click="getVal();getValScan()"/><label for="20">Corse</label></div>
+								</li>
+								<li>
+									<div class="collapsible-header">Ile-de-France</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="75" value="75" ng-click="getVal();getValScan()"/><label for="75">Paris</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="77" value="77" ng-click="getVal();getValScan()"/><label for="77">Seine-et-Marne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="78" value="78" ng-click="getVal();getValScan()"/><label for="78">Yvelines</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="91" value="91" ng-click="getVal();getValScan()"/><label for="91">Essonne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="92" value="92" ng-click="getVal();getValScan()"/><label for="92">Hauts-de-Seine</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="93" value="93" ng-click="getVal();getValScan()"/><label for="93">Seine-Saint-Denis</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="94" value="94" ng-click="getVal();getValScan()"/><label for="94">Val-de-Marne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="95" value="95" ng-click="getVal();getValScan()"/><label for="95">Val-d'oise</label></p>	  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Languedoc-Roussillon-Midi-Pyrénées</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="9" value="9" ng-click="getVal();getValScan()"/><label for="9">Ariège</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="11" value="11" ng-click="getVal();getValScan()"/><label for="11">Aude</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="12" value="12" ng-click="getVal();getValScan()"/><label for="12">Aveyron</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="30" value="30" ng-click="getVal();getValScan()"/><label for="30">Gard</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="31" value="31" ng-click="getVal();getValScan()"/><label for="31">Haute-Garonne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="32" value="32" ng-click="getVal();getValScan()"/><label for="32">Gers</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="34" value="34" ng-click="getVal();getValScan()"/><label for="34">Hérault</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="46" value="46" ng-click="getVal();getValScan()"/><label for="46">Lot</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="48" value="48" ng-click="getVal();getValScan()"/><label for="48">LozÃ¨re</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="65" value="65" ng-click="getVal();getValScan()"/><label for="65">Hautes-Pyrénées</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="66" value="66" ng-click="getVal();getValScan()"/><label for="66">Pyrénées-Orientales</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="81" value="81" ng-click="getVal();getValScan()"/><label for="81">Tarn</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="82" value="82" ng-click="getVal();getValScan()"/><label for="82">Tarn-et-Garonne</label></p>	  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Nord-Pas-de-Calais-Picardie</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="02" value="02" ng-click="getVal();getValScan()"/><label for="02">Aisne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="59" value="59" ng-click="getVal();getValScan()"/><label for="59">Nord</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="60" value="60" ng-click="getVal();getValScan()"/><label for="60">Oise</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="62" value="62" ng-click="getVal();getValScan()"/><label for="62">Pas-de-Calais</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="80" value="80" ng-click="getVal();getValScan()"/><label for="80">Somme</label></p>  
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Normandie</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="14" value="14" ng-click="getVal();getValScan()"/><label for="14">Calvados</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="27" value="27" ng-click="getVal();getValScan()"/><label for="27">Eure</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="50" value="50" ng-click="getVal();getValScan()"/><label for="50">Manche</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="61" value="61" ng-click="getVal();getValScan()"/><label for="61">Orne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="76" value="76" ng-click="getVal();getValScan()"/><label for="76">Seine-Maritime</label></p>
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Pays de la Loire</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="44" value="44" ng-click="getVal();getValScan()"/><label for="44">Loire-Atlantique</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="49" value="49" ng-click="getVal();getValScan()"/><label for="49">Maine-et-Loire</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="53" value="53" ng-click="getVal();getValScan()"/><label for="53">Mayenne</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="72" value="72" ng-click="getVal();getValScan()"/><label for="72">Sarthe</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="85" value="85" ng-click="getVal();getValScan()"/><label for="85">Vendée</label></p>
+									</div>
+								</li>
+								<li>
+									<div class="collapsible-header">Provence-Alpes-Côte d'Azur</div>
+									<div class="collapsible-body">
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="04" value="04" ng-click="getVal();getValScan()"/><label for="04">Alpes-de-Haute-Provence</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="05" value="05" ng-click="getVal();getValScan()"/><label for="05">Hautes-Alpes</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="06" value="06" ng-click="getVal();getValScan()"/><label for="06">Alpes-Maritimes</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="13" value="13" ng-click="getVal();getValScan()"/><label for="13">Bouches-du-Rhône</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="83" value="83" ng-click="getVal();getValScan()"/><label for="83">Var</label></p>
+										<p class="modal-action modal-close"><input type="radio" name="formDeptRadio" ng-model="deptRadio" id="84" value="84" ng-click="getVal();getValScan()"/><label for="84">Vaucluse</label></p>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="#!" class="modal-action modal-close waves-effect waves-green btn btn-small"><i class="material-icons left">cancel</i>Fermer</a>
+					</div>
+				</div>
+				<!--Fin ModalFiltreDept Structure--> 
+
+				<!-- ModalMap Structure -->
+				<div id="modalMap" class="modal">
+					<div class="row valign-wrapper">
+						<div class="col col s12 m4">
+							<div class="modal-content">
+								<ul class="collapsible" data-collapsible="accordion">
+									<li>
+										<div class="collapsible-header teal">Voir le trajet</div>
+										<div class="collapsible-body" id="panel"></div>
+									</li>
+								</ul>
+								<ng-map id="map" center="[{{myLat}},{{myLng}}]" zoom="13" mayTypeId="TERRAIN">
+									<directions draggable="true"
+                    panel="panel"
+					travel-mode="{{modeRadio}}"
+                    origin="{{myLat}},{{myLng}}"
+                    destination="{{latEtab}},{{lonEtab}}">
+									</directions> 
+								</ng-map>
+							</div>
+							<div class="modal-footer">
+								<input name="mode" type="radio" id="WALKING" value="WALKING" ng-model="modeRadio" checked>
+									<label for="WALKING">A pieds</label>
+									<input name="mode" type="radio" id="DRIVING" value="DRIVING" ng-model="modeRadio">
+										<label for="DRIVING">En voiture</label>
+										<input name="mode" type="radio" id="BICYCLING" value="BICYCLING" ng-model="modeRadio">
+											<label for="BICYCLING">En vélo</label>
+											<input name="mode" type="radio" id="TRANSIT" value="TRANSIT" ng-model="modeRadio">
+												<label for="TRANSIT">En transport en commun</label>
+												<a href="#!" class="modal-action modal-close waves-effect waves-green btn btn-small"><i class="material-icons left">cancel</i>Fermer</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--Fin ModalMap Structure -->
+								<!--ModalMapBibs Structure--> 
+								<div id="modalMapBibs" class="modal">
+									<div class="row valign-wrapper">
+										<div class="col col s12 m4">
+											<div class="modal-content">
+												<ng-map id="mapBibs" center="[{{myLat}},{{myLng}}]" zoom="{{zoomRange}}" mayTypeId="TERRAIN">
+													<marker ng-repeat="spot in libraries" position="{{spot.latitude}}, {{spot.longitude}}" on-click="showSpot(event,spot)">
+														<info-window id="myInfoWindow">
+															<div ng-non-bindable>
+																<h6>{{selectedSpot.shortname}}</h6>
+																<p>rcr : {{selectedSpot.rcr}}</p>
+															</div> 
+														</info-window>
+													</marker>	 
+												</ng-map>
+												<h5>Zoom</h5>
+												<input type="range" ng-model="zoomRange" ng-init="zoomRange='10'" value="10" max="20" min="1" step="1" />
+											</div>
+											<div class="modal-footer">
+												<a href="#!" class="modal-action modal-close waves-effect waves-green btn btn-small"><i class="material-icons left">cancel</i>Fermer</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--Fin ModalMap Structure-->  
+								<!-- ModalInfos Structure -->
+								<div id="modalInfos" class="modal purple lighten-4">
+									<div class="row valign-wrapper">
+										<div class="col col s12 m4">
+											<div class="modal-content">
+												<p>{{name}}</p>
+												<p><i class="material-icons prefix">location_city</i>{{address}}</p>
+												<p><i class="material-icons prefix">contact_phone</i>{{tel}}</p>
+												<p><i class="material-icons prefix">contact_mail</i><a href="mailto:{{email}}">{{email}}</a></p>
+											</div>
+											<div class="modal-footer">
+												<a href="#!" class="modal-action modal-close waves-effect waves-green btn btn-small"><i class="material-icons left">cancel</i>Fermer</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--Fin ModalInfos Structure -->  
+
+								<!-- ModalFiltre Structure-->
+								<div id="modalFiltre" class="modal">
+									<div class="modal-content">
+										<div class="row">
+											<h6>Chercher</h6>
+											<div class="input-field col s6">
+												<i class="material-icons prefix"></i>
+												<input id="icon_prefix" type="text" class="validate" ng-model="search">
+													<label for="icon_prefix">Filtrer</label>
+												</div>
+											</div>
+											<h6>Filtrer par type de bibliothèque</h6>
+											<p class="modal-action modal-close"><input type="radio" name="formTypeRadio" ng-model="formModel.typeRadio" id="tout" value="" checked /><label for="tout">Tout type</label></p>
+											<p class="modal-action modal-close" ng-repeat="hit in items | unique: 'type'" class="waves-effect waves-light">
+												<input type="radio" name="formTypeRadio" ng-model="$parent.formModel.typeRadio" id="{{hit.type}}" value="{{hit.type}}" />
+												<label for="{{hit.type}}">{{hit.type}} <span>({{(totalFilteredResults|filter:hit.type).length}})</span></label>
+											</p>
+										</div>
+										<div class="modal-footer">
+											<a href="#!" class="modal-action modal-close waves-effect waves-green btn btn-small"><i class="material-icons left">cancel</i>Fermer</a>
+										</div>
+									</div>
+									<!--Fin ModalFiltre Structure--> 
+								</div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script src="js/jquery-2.1.4.min.js"></script>
+		<script src="js/jquery.xml2json.js"></script>			
+		<script src="js/materialize.min.js"></script>
+		<script src="js/materialize-custom.js"></script>
+		<!--Angular js-->
+		<script src="js/angular/angular.min.js"></script>
+		<script src="js/angular/angular-filter.min.js"></script>
+		<script src="js/angular/angular-simple-logger.js"></script>
+		<script src="js/angular/ng-map.min.js"></script>
+		<script>
+document.addEventListener('deviceready', function onDeviceReady() {
+            //angular.bootstrap(document, ['myApp']);			
+if (window.ezar) {
+            ezar.initializeVideoOverlay(
+                function() {
+                ezar.getBackCamera().start();
+                },
+                function(err) {
+                alert('unable to init ezar: ' + err);
+            });
+        } else {
+            alert('Unable to detect the ezAR plugin');
+        }		
+        }, false);		
+var myApp = angular.module('myApp', ['angular.filter','ngMap']);
+myApp.controller('myCtrl', function(cordovaReady,barcodeScanner,geolocation,compass,$scope, $http,$filter,NgMap) {
+geolocation.getCurrentPosition(function (position) { 
+		  $scope.myLat = position.coords.latitude;
+		  $scope.myLng = position.coords.longitude;
+  });
+compass.watchHeading(function (heading) {
+		  $scope.degree = heading.magneticHeading;
+		  var directions = ['Nord', 'Nord-Est', 'Est', 'Sud-Est', 'Sud', 'Sud-Ouest', 'Ouest', 'Nord-Ouest', 'Nord'];
+		  $scope.direction = directions[Math.abs(parseInt(($scope.degree) / 45) + 1)];			  
+});
+$scope.scan = function(scanRadio){
+barcodeScanner.scan(function (result) {  
+ $scope.value = result.text;
+ //$scope.value = "9782200016432";
+ var urlPart = $scope.scanRadio;
+  $http.get("https://www.sudoc.fr/services/"+urlPart+"2ppn/" + $scope.value + "&format=text/json")
+    .then(function(response) {	
+	if(Array.isArray(response.data.sudoc.query.result)) {
+	 $scope.ppn = response.data.sudoc.query.result[0].ppn	;
+	  } 
+	else {
+	$scope.ppn = response.data.sudoc.query.result.ppn;
+        }
+	$http.get("https://www.sudoc.fr/" + $scope.ppn + ".abes")
+    .then(function(response) {
+	$scope.fields = $.xml2json($.parseXML(response.data)).datafield;	
+	angular.forEach($scope.fields, function(value, key){
+         if(value.tag== "200")
+           $scope.title = value.subfield; 		   
+         });
+	});
+    $http.get("https://www.sudoc.fr/services/multiwhere/" + $scope.ppn + "&format=text/json")
+    .then(function(response) {
+	if(Array.isArray(response.data.sudoc.query.result.library)) {
+	$scope.count = response.data.sudoc.query.result.library.length;
+	 $scope.libraries = response.data.sudoc.query.result.library;}
+	 else {
+	 $scope.count = "1";
+	   $scope.libraries = JSON.parse('[{"longitude":"'+response.data.sudoc.query.result.library.longitude+'","shortname":"'+response.data.sudoc.query.result.library.shortname+'","latitude":"'+response.data.sudoc.query.result.library.latitude+'","rcr":"'+response.data.sudoc.query.result.library.rcr+'"}]');
+	 }
+	});	
+		});
+    });
+} 
+//Affiche les données de data.json après application du filtre de dpt
+$scope.getVal=function(){
+		$http.get("data/data.json")
+    .then(function(response) {
+        $scope.items = response.data;	
+	});
+	$scope.customfilter = function(hit) {
+    return hit.rcr.substr(0, 2) === $scope.deptRadio;
+  };
+      }
+//Application du filtre dpt aux bibs résultat du scan	  
+$scope.getValScan=function(){
+	$scope.customfilterSpot = function(spot) {
+    return spot.rcr.substr(0, 2) === $scope.deptRadio;
+  };
+      }	  
+//calcul de l'orientation et des distancs par rapport au mobile
+$scope.myObj = function(item) {
+    item.dLat = ($scope.myLat-item.latitude)* Math.PI / 180;
+	item.dLon = ($scope.myLng-item.longitude)* Math.PI / 180;
+    item.lat1 = item.latitude * Math.PI / 180;
+	item.lat2 = $scope.myLat * Math.PI / 180;
+    item.y = Math.sin(item.dLon) * Math.cos(item.lat2);
+	item.x = Math.cos(item.lat1)*Math.sin(item.lat2) - Math.sin(item.lat1)*Math.cos(item.lat2)*Math.cos(item.dLon);
+	item.bearing = (Math.atan2(item.y, item.x) * 180 / Math.PI) + 180; 
+	item.spacing = ((item.bearing - $scope.degree) * 5)+50 ;
+    item.order = Math.abs(((item.bearing - $scope.degree) * 5)+50);
+	item.a = Math.sin(item.dLat/2) * Math.sin(item.dLat/2) + Math.sin(item.dLon/2) * Math.sin(item.dLon/2) * Math.cos(item.lat1) * Math.cos(item.lat2); 
+    item.c = 2 * Math.atan2(Math.sqrt(item.a), Math.sqrt(1-item.a));
+	item.distance = Math.round((3958.76  * item.c) * 1.60934);
+	item.distanceM = item.distance * 1000;
+  return{
+    "margin-left":item.spacing+"px",
+	"width":"300px"
+    }   
+ }	
+//ordonne l'affichage des bibs en fonction de leur orientation (onglet 1)
+$scope.$watch(function() { return $scope.items; }, sortList, true);
+function sortList() {
+  $scope.orderedItems = $filter('orderBy')($scope.items, 'order');
+} 
+//idem pour l'onglet 2
+$scope.$watch(function() { return $scope.libraries; }, sortListScan, true);
+function sortListScan() {
+  $scope.orderedLibraries = $filter('orderBy')($scope.libraries, 'order');
+}
+//passage des paramètres de géoloc des bibs pour la google map
+$scope.initializeMap = function(item){
+$scope.latEtab = item.latitude;
+$scope.lonEtab = item.longitude;
+}
+//passage des paramètres pour l'affichage des infos sur les bibs
+$scope.initializeInfos = function(item){
+$scope.name = item.name;
+$scope.tel = item.tel;
+$scope.address = item.address;
+$scope.email = item.email;
+}
+//function pour la carte des bibs géolocalisées pour un ISBN : ne marche pas
+function showSpot(event, spot) {
+    $scope.selectedSpot = spot;
+    $scope.mapBibs.showInfoWindow('myInfoWindow', this);
+  }
+//passage de l'url pour le plugun inappbrowser  
+$scope.openWeb = function(item) {
+var ref = cordova.InAppBrowser.open(item.web, '_blank', 'location=yes');
+} 
+//fonction pour stopper la caméra 
+$scope.stop = function (){
+ezar.getBackCamera().stop();
+} 
+//fonction pour ré-activer la caméra
+$scope.restart = function (){
+ezar.getBackCamera().start();
+} 
+});		
+		</script>
+		<script src="services/cordovaReady.service.js"></script>
+		<script src="services/barcodeScanner.service.js"></script>
+        <script src="services/geolocation.service.js"></script>
+        <script src="services/compass.service.js"></script>		
+    </body>
+</html>
+

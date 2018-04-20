@@ -1,0 +1,161 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "cordova-plugin-device-orientation",
+        "scope": null,
+        "escapedName": "cordova-plugin-device-orientation",
+        "name": "cordova-plugin-device-orientation",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "C:\\Users\\Cunouille\\PhonegapApps\\dev"
+    ]
+  ],
+  "_from": "cordova-plugin-device-orientation@latest",
+  "_id": "cordova-plugin-device-orientation@2.0.1",
+  "_inCache": true,
+  "_location": "/cordova-plugin-device-orientation",
+  "_nodeVersion": "6.6.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/cordova-plugin-device-orientation_2.0.1_1523945125809_0.9964861718051699"
+  },
+  "_npmUser": {
+    "name": "stevegill",
+    "email": "stevengill97@gmail.com"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "cordova-plugin-device-orientation",
+    "scope": null,
+    "escapedName": "cordova-plugin-device-orientation",
+    "name": "cordova-plugin-device-orientation",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-device-orientation/-/cordova-plugin-device-orientation-2.0.1.tgz",
+  "_shasum": "149d51250defc309f0d03d306fe28e89881ba84d",
+  "_shrinkwrap": null,
+  "_spec": "cordova-plugin-device-orientation",
+  "_where": "C:\\Users\\Cunouille\\PhonegapApps\\dev",
+  "author": {
+    "name": "Apache Software Foundation"
+  },
+  "bugs": {
+    "url": "https://issues.apache.org/jira/browse/CB"
+  },
+  "cordova": {
+    "id": "cordova-plugin-device-orientation",
+    "platforms": [
+      "firefoxos",
+      "android",
+      "amazon-fireos",
+      "ubuntu",
+      "blackberry10",
+      "ios",
+      "wp7",
+      "wp8",
+      "windows8",
+      "tizen",
+      "browser"
+    ]
+  },
+  "dependencies": {},
+  "description": "[DEPRECATED] Cordova Device Orientation Plugin",
+  "devDependencies": {
+    "jshint": "^2.6.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "149d51250defc309f0d03d306fe28e89881ba84d",
+    "tarball": "https://registry.npmjs.org/cordova-plugin-device-orientation/-/cordova-plugin-device-orientation-2.0.1.tgz",
+    "fileCount": 47,
+    "unpackedSize": 226186,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa1Y6mCRA9TVsSAnZWagAAIQAP/2xBzAcjtNob/HcP73qb\nwBSWK/JK1SRK4sJmpGP/DCBaWZSegVtrFqiq7TzWKoVaZTPk8Kpyof4gipXn\nRJBpRsC4asRvBscajnrKGKi1mDNQGoXpvPlVwPIdpT/ZNQxrv7qpenV9xN+k\nTAPWaT4M+cochCDF276/WFktz47vPfBPWzgeFmT7posyOKmj+8+L+VQhsnfP\nvEEVv683pJ8cXKtAjOmJtkCXnirj86lgId0AjIGhOXcp4i8VBu5ILBl7eNot\nGDRmS5kO9jKwrJDzDwXamu1aYx+HAbWrUVfJIO/9qoNlhaOE9L4QnPwhrdsv\n7sfT28wSkZF/9cnTWr5CEJt8jgzkOYS+e1KRsHwOSIbzPg3yy95dFk995PD2\nCv4cnqOM2iDGbkItnqj20GFm1fB3MDd/pn8fHYE/T9KIt/juhZ3zFsan6PyG\nlzbM5Is5Jt069Ow6IKc3LBt/zlHC1FdRja/ye1ef7Z5t3/p9uptV/gJNvVV5\nJ1nY6HnZXj3htkkSrR4EadvZnMXVPXNoxKtcwJImiOXX/5w7mE/aufo9jZP6\ntj8ha96j4b1Wqobhzq19YCHt9fRWIhv1/WN9nyFT4I7yR0jFwGNN/E6QtrIu\nbOWhTNKkMRO2H3Md+yKtZ22+5150yMqJQa7dgfyKSGcdgf2sVz2PB26uGjiH\nnkKB\r\n=RoMA\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "engines": {
+    "cordovaDependencies": {
+      "3.0.0": {
+        "cordova": ">100"
+      }
+    }
+  },
+  "homepage": "https://github.com/apache/cordova-plugin-device-orientation#readme",
+  "keywords": [
+    "cordova",
+    "device",
+    "orientation",
+    "ecosystem:cordova",
+    "cordova-firefoxos",
+    "cordova-android",
+    "cordova-amazon-fireos",
+    "cordova-ubuntu",
+    "cordova-blackberry10",
+    "cordova-ios",
+    "cordova-wp7",
+    "cordova-wp8",
+    "cordova-windows8",
+    "cordova-tizen",
+    "cordova-browser"
+  ],
+  "license": "Apache-2.0",
+  "maintainers": [
+    {
+      "name": "bowserj",
+      "email": "bowserj@apache.org"
+    },
+    {
+      "name": "csantanapr",
+      "email": "csantana23@gmail.com"
+    },
+    {
+      "name": "filmaj",
+      "email": "maj.fil@gmail.com"
+    },
+    {
+      "name": "jcesarmobile",
+      "email": "jcesarmobile@gmail.com"
+    },
+    {
+      "name": "macdonst",
+      "email": "simon.macdonald@gmail.com"
+    },
+    {
+      "name": "purplecabbage",
+      "email": "purplecabbage@gmail.com"
+    },
+    {
+      "name": "shazron",
+      "email": "shazron@gmail.com"
+    },
+    {
+      "name": "stevegill",
+      "email": "stevengill97@gmail.com"
+    },
+    {
+      "name": "vishalmishra",
+      "email": "vishalmishra0907@gmail.com"
+    }
+  ],
+  "name": "cordova-plugin-device-orientation",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apache/cordova-plugin-device-orientation.git"
+  },
+  "scripts": {
+    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests",
+    "test": "npm run jshint"
+  },
+  "types": "./types/index.d.ts",
+  "version": "2.0.1"
+}
