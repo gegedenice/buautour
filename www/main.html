@@ -436,7 +436,7 @@ barcodeScanner.scan(function (result) {
 	else {
 	$scope.ppn = response.data.sudoc.query.result.ppn;
         }
-	$http.get("https://www.sudoc.fr/" + $scope.ppn + ".abes")
+	//secret url
     .then(function(response) {
 	$scope.fields = $.xml2json($.parseXML(response.data)).datafield;	
 	angular.forEach($scope.fields, function(value, key){
